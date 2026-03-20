@@ -1,0 +1,9 @@
+.vscode/
+__pycache__/
+*.exe
+*.dll
+*.log
+build/
+.env
+tests/dataset/T1053.005_Scheduled_Task/schtasks_create.json
+tests/dataset/T1053.005_Scheduled_Task/

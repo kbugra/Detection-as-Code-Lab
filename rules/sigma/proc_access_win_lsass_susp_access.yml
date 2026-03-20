@@ -1,0 +1,28 @@
+title: Suspicious Access to LSASS Process
+id: 32d0d3e2-e58d-4d41-926b-18b520b2b32d
+status: experimental
+description: Detects suspicious access to the LSASS process, which is often an indicator of credential dumping tools like Mimikatz.
+author: Senin Adın
+date: 2026-03-20
+tags:
+    - attack.credential_access
+    - attack.t1003.001
+logsource:
+    category: process_access
+    product: windows
+    # Sysmon Event ID 10 (ProcessAccess) loglarına bakacağımızı belirtiyoruz
+detection:
+    selection:
+        TargetImage|endswith: '\lsass.exe'
+        GrantedAccess: 
+            - '0x1010'
+            - '0x1410'
+            - '0x143a'
+            - '0x1f0fff'
+    filter_system:
+        # Yanlış pozitifleri (False Positive) önlemek için sistemin kendi normal işlemlerini hariç tutuyoruz
+        SourceImage|startswith: 'C:\Windows\System32\'
+    condition: selection and not filter_system
+falsepositives:
+    - Antivirüs yazılımlarının LSASS taramaları (Eğer varsa SourceImage kısmına eklenmeli)
+level: high

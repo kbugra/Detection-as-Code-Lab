@@ -1,0 +1,25 @@
+title: Suspicious PowerShell Encoded Command
+id: 3d304fda-78aa-43ed-975c-d740798a49c1
+status: experimental
+description: Detects the use of encoded commands in PowerShell, a common technique used by malware and attackers to evade detection.
+author: kbugra
+date: 2026-03-20
+tags:
+    - attack.execution
+    - attack.t1059.001
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith:
+            - '\powershell.exe'
+            - '\pwsh.exe'
+        CommandLine|contains:
+            - ' -enc '
+            - ' -EncodedCommand '
+            - ' -ec '
+    condition: selection
+falsepositives:
+    - Yönetici (Admin) tarafından çalıştırılan meşru otomasyon scriptleri
+level: high

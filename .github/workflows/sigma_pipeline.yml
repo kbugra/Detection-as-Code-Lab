@@ -1,0 +1,52 @@
+name: Detection as Code Factory
+
+# Bu robot ne zaman çalışacak? (Ana dala kod itildiğinde veya PR açıldığında)
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  sigma-ci-cd:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 1. Kodu GitHub'dan Çek
+        uses: actions/checkout@v3
+
+      - name: 2. Python Ortamını Kur
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: 3. Sigma CLI ve Eklentilerini Yükle
+        run: |
+          pip install sigma-cli
+          sigma plugin install splunk
+          sigma plugin install elasticsearch
+          sigma plugin install sysmon
+
+      - name: 4. Kuralları Test Et (Syntax & Linting)
+        run: |
+          echo "Kuralların yapısı kontrol ediliyor..."
+          sigma check rules/sigma/
+
+      - name: 5. Kuralları SIEM Dillerine Çevir (Build Aşaması)
+        run: |
+          mkdir -p build/splunk build/elastic
+          echo "Splunk SPL'e dönüştürülüyor..."
+          sigma convert -t splunk -p sysmon rules/sigma/ > build/splunk/windows_detections.spl
+          
+          echo "Elasticsearch Query'e dönüştürülüyor..."
+          sigma convert -t lucene -p sysmon rules/sigma/ > build/elastic/windows_detections.txt
+
+      - name: 6. Üretilen Kodları Göster (Loglar için)
+        run: |
+          echo "==== ÜRETİLEN SPLUNK SORGUSU ===="
+          cat build/splunk/windows_detections.spl
+          echo -e "\n==== ÜRETİLEN ELASTICSEARCH SORGUSU ===="
+          cat build/elastic/windows_detections.txt

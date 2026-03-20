@@ -1,0 +1,22 @@
+title: Ransomware Behavior - Deleting Shadow Copies
+id: c947b146-0abc-4c87-9c64-b17e9d7274a2
+status: experimental
+description: Detects the deletion of volume shadow copies via vssadmin.exe, a critical precursor to ransomware encryption.
+author: Senin Adın
+date: 2026-03-20
+tags:
+    - attack.impact
+    - attack.t1490
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\vssadmin.exe'
+        CommandLine|contains|all:
+            - 'delete'
+            - 'shadows'
+    condition: selection
+falsepositives:
+    - Çok nadir olarak yetkili sistem yöneticisi (SysAdmin) bakımları
+level: critical

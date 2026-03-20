@@ -1,0 +1,26 @@
+title: Suspicious Scheduled Task Creation
+id: 92626ddd-662c-49e3-ac59-f6535f12d189
+status: experimental
+description: Detects the creation of a new scheduled task using schtasks.exe, often used by attackers for persistence.
+author: kbugra
+date: 2026-03-20
+tags:
+    - attack.persistence
+    - attack.t1053.005
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\schtasks.exe'
+        CommandLine|contains|all:
+            - '/create'
+            - '/tn'
+            - '/tr'
+    filter:
+        # SCCM veya Windows update gibi sistem işlemlerini hariç tutabiliriz
+        User: 'NT AUTHORITY\SYSTEM'
+    condition: selection and not filter
+falsepositives:
+    - Meşru yazılım kurulumları veya sistem güncellemeleri
+level: medium
