@@ -37,10 +37,11 @@ Projeyi kendi ortamınızda test etmek veya SIEM sorgularını üretmek için:
 ```bash
 # Bağımlılıkları yükleyin
 pip install sigma-cli
-sigma plugin install splunk azure
+sigma plugin install splunk elasticsearch sysmon
 
 # Tüm kuralları Splunk'a dönüştürün
 sigma convert -t splunk -p sysmon rules/sigma/
 
 # Elasticsearch için dönüştürün
 sigma convert -t lucene -p sysmon rules/sigma/
+```
