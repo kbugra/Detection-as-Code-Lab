@@ -5,99 +5,141 @@
 
 > **Transforming threat hunting from a manual task into a continuous engineering pipeline.**
 
-## Project Vision (Ruleset Philosophy)
-Modern Security Operations Centers (SOC) must move beyond managing rule creation and testing processes manually. This project is built upon the "Detection-as-Code" (DaC) philosophy to transform traditional SIEM query writing into a **Software Engineering (CI/CD)** discipline.
+## Project Vision
+This repository treats detection engineering as code. Sigma rules are versioned, validated against curated attack/benign fixtures, and automatically compiled into SIEM-ready queries through GitHub Actions.
 
-Our goal is to write platform-agnostic Sigma rules, automatically validate them against industry-standard **Mordor APT simulation logs**, and convert them into Splunk (SPL) and Elasticsearch (Lucene/KQL) formats within seconds via GitHub Actions.
+## What This Repository Actually Does
+1. Write vendor-agnostic Sigma rules under `/rules/sigma/`.
+2. Validate those rules against positive and negative fixtures under `/tests/dataset/`.
+3. Run syntax checks with Sigma CLI.
+4. Build Splunk SPL and Elasticsearch Lucene outputs into `/build/`.
+5. Upload generated artifacts from CI for downstream SIEM use.
 
-## System Architecture (Pipeline Automation)
+## Validation Model
+The validation workflow is driven by `/tests/validation_cases.json` and executed by `python tools/validate_datasets.py`.
 
-1. **Code:** New Cyber Threat Intelligence (CTI) is written in YAML format (Sigma).
-2. **Commit:** The code is pushed to GitHub.
-3. **CI/CD (GitHub Actions):** 
-   - YAML syntax checking (Linting).
-   - Logical validation.
-   - Rules are automatically compiled into the `/build` directory for **Splunk** and **Elasticsearch** (Build).
-4. **Deploy:** The generated queries are ready to be integrated into SIEM systems.
+- Positive fixtures ensure each rule fires on the intended attack sample.
+- Negative fixtures ensure the same rule does not fire on curated benign activity.
+- The dataset folder includes Mordor-style logs and lightweight lab fixtures formatted as Sysmon-like JSON/JSONL for deterministic CI validation.
 
 ## MITRE ATT&CK Coverage Matrix
-
-The tactics and techniques covered by our current detection rules are mapped below:
 
 | Tactic | Technique ID | Technique Name | Sigma Rule | Status |
 | :--- | :--- | :--- | :--- | :---: |
 | **Credential Access** | `T1003.001` | LSASS Memory Dumping | `proc_access_win_lsass_susp_access.yml` | Active |
-| **Execution** | `T1059.001` | PowerShell | `proc_creation_win_powershell_encoded.yml` | Active |
+| **Execution** | `T1059.001` | PowerShell Encoded Command | `proc_creation_win_powershell_encoded.yml` | Active |
 | **Persistence** | `T1053.005` | Scheduled Task/Job | `proc_creation_win_schtasks_creation.yml` | Active |
-| **Impact** | `T1490` | Inhibit System Recovery (Ransomware) | `proc_creation_win_vssadmin_delete_shadows.yml` | Active |
+| **Impact** | `T1490` | Inhibit System Recovery | `proc_creation_win_vssadmin_delete_shadows.yml` | Active |
 
-## Validation with Golden Dataset
-To avoid reinventing the wheel and to ensure industry-standard calibration, the **OTRF Mordor** open-source dataset is utilized in this project. Our rules pass through rigorous Security QA checks using real-world (APT29, etc.) simulation logs located in the `/tests/dataset/` directory.
+## Local Usage
 
-## How to Run Locally
-
-To test the project in your own environment or to manually generate SIEM queries:
-
+### 1. Run fixture validation
 ```bash
-# Install dependencies
-pip install sigma-cli
-sigma plugin install splunk elasticsearch sysmon
-
-# Convert all rules to Splunk SPL
-sigma convert -t splunk -p sysmon rules/sigma/
-
-# Convert to Elasticsearch (Lucene)
-sigma convert -t lucene -p sysmon rules/sigma/
+python tools/validate_datasets.py
 ```
+
+### 2. Install Sigma CLI for lint/build
+```bash
+pip install sigma-cli
+python tools/run_sigma_cli.py plugin install splunk
+python tools/run_sigma_cli.py plugin install elasticsearch
+python tools/run_sigma_cli.py plugin install sysmon
+```
+
+### 3. Run Sigma syntax checks
+```bash
+python tools/run_sigma_cli.py check rules/sigma/
+```
+
+### 4. Build SIEM outputs
+```bash
+python tools/build_sigma.py
+```
+
+Generated files:
+
+- `build/splunk/windows_detections.spl`
+- `build/elastic/windows_detections.txt`
+
+`build/` is intentionally generated and not committed to git.
+
+## CI/CD Flow
+The GitHub Actions pipeline in `/.github/workflows/sigma_pipeline.yml` performs:
+
+1. Fixture validation
+2. Sigma syntax/lint checks
+3. Splunk and Elasticsearch builds
+4. Artifact upload
 
 ---
 
 [TR]
-# Detection-as-Code (DaC) Factory: Sigma Pack for Windows Security
+# Detection-as-Code (DaC) Factory: Windows Security için Sigma Paketi
 
-> **Transforming threat hunting from a manual task into a continuous engineering pipeline.**
+> **Threat hunting sürecini manuel iş yükünden sürekli çalışan bir mühendislik pipeline’ına dönüştürmek.**
 
-## Proje Vizyonu (Ruleset Philosophy)
-Modern Güvenlik Operasyon Merkezleri (SOC), kural yazımını ve test süreçlerini manuel olarak yönetmenin ötesine geçmelidir. Bu proje, geleneksel SIEM sorgu yazarlığını bir **Yazılım Mühendisliği (CI/CD)** disiplinine dönüştürmek amacıyla "Detection-as-Code" (DaC) felsefesiyle inşa edilmiştir. 
+## Proje Vizyonu
+Bu repo detection engineering sürecini kod gibi ele alır. Sigma kuralları versiyonlanır, saldırı ve benign fixture’lar üzerinde doğrulanır, ardından GitHub Actions ile SIEM’e hazır sorgulara dönüştürülür.
 
-Amacımız; platform bağımsız (vendor-agnostic) Sigma kuralları yazmak, bu kuralları sektör standardı olan **Mordor APT simülasyon logları** ile otomatik olarak test etmek ve GitHub Actions aracılığıyla saniyeler içinde Splunk (SPL) ve Elasticsearch (Lucene/KQL) dillerine dönüştürmektir.
+## Bu Repo Gerçekte Ne Yapıyor?
+1. Vendor-agnostic Sigma kuralları `/rules/sigma/` altında tutulur.
+2. Kurallar `/tests/dataset/` altındaki pozitif ve negatif fixture’lara karşı test edilir.
+3. Sigma CLI ile syntax/lint kontrolü yapılır.
+4. Splunk SPL ve Elasticsearch Lucene çıktıları `/build/` altına üretilir.
+5. CI çıktıları artifact olarak yüklenir ve SIEM entegrasyonu için hazır hale gelir.
 
-## Sistem Mimarisi (Pipeline Otomasyonu)
+## Doğrulama Modeli
+Doğrulama akışı `/tests/validation_cases.json` ile tanımlanır ve `python tools/validate_datasets.py` ile çalıştırılır.
 
-1. **Code:** Yeni tehdit istihbaratı (CTI) YAML formatında (Sigma) yazılır.
-2. **Commit:** Kod GitHub'a pushlanır.
-3. **CI/CD (GitHub Actions):** 
-   - YAML syntax kontrolü yapılır (Linting).
-   - Mantıksal doğrulama gerçekleştirilir.
-   - Kurallar otomatik olarak `/build` klasörüne **Splunk** ve **Elasticsearch** dilleri için derlenir (Build).
-4. **Deploy:** Üretilen sorgular SIEM sistemlerine entegre edilmeye hazırdır.
+- Pozitif fixture’lar her kuralın hedeflenen saldırı örneğinde tetiklendiğini doğrular.
+- Negatif fixture’lar aynı kuralın benign aktivitede tetiklenmediğini doğrular.
+- Dataset klasörü, deterministik CI doğrulaması için Mordor tarzı loglar ve Sysmon benzeri JSON/JSONL formatında hafif lab fixture’ları içerir.
 
 ## MITRE ATT&CK Kapsam Matrisi
 
-Mevcut tespit kurallarımızın kapsadığı taktik ve teknikler aşağıda haritalandırılmıştır:
-
-| Taktik (Tactic) | Teknik ID | Teknik Adı | Sigma Kuralı | Durum |
+| Taktik | Teknik ID | Teknik Adı | Sigma Kuralı | Durum |
 | :--- | :--- | :--- | :--- | :---: |
 | **Credential Access** | `T1003.001` | LSASS Memory Dumping | `proc_access_win_lsass_susp_access.yml` | Aktif |
-| **Execution** | `T1059.001` | PowerShell | `proc_creation_win_powershell_encoded.yml` | Aktif |
+| **Execution** | `T1059.001` | PowerShell Encoded Command | `proc_creation_win_powershell_encoded.yml` | Aktif |
 | **Persistence** | `T1053.005` | Scheduled Task/Job | `proc_creation_win_schtasks_creation.yml` | Aktif |
-| **Impact** | `T1490` | Inhibit System Recovery (Ransomware) | `proc_creation_win_vssadmin_delete_shadows.yml` | Aktif |
+| **Impact** | `T1490` | Inhibit System Recovery | `proc_creation_win_vssadmin_delete_shadows.yml` | Aktif |
 
-## Altın Veri Seti (Golden Dataset) İle Doğrulama
-Bu projede tekerleği yeniden icat etmemek ve endüstri standartlarında kalibrasyon sağlamak için **OTRF Mordor** açık kaynak veri seti kullanılmıştır. Kurallarımız, `/tests/dataset/` dizinindeki gerçek dünya (APT29 vb.) simülasyonlarına ait loglar üzerinde kalite kontrolünden (Security QA) geçmektedir.
+## Lokal Kullanım
 
-## Nasıl Çalıştırılır?
-
-Projeyi kendi ortamınızda test etmek veya SIEM sorgularını üretmek için:
-
+### 1. Fixture validation çalıştır
 ```bash
-# Bağımlılıkları yükleyin
-pip install sigma-cli
-sigma plugin install splunk elasticsearch sysmon
-
-# Tüm kuralları Splunk'a dönüştürün
-sigma convert -t splunk -p sysmon rules/sigma/
-
-# Elasticsearch için dönüştürün
-sigma convert -t lucene -p sysmon rules/sigma/
+python tools/validate_datasets.py
 ```
+
+### 2. Sigma CLI kur
+```bash
+pip install sigma-cli
+python tools/run_sigma_cli.py plugin install splunk
+python tools/run_sigma_cli.py plugin install elasticsearch
+python tools/run_sigma_cli.py plugin install sysmon
+```
+
+### 3. Sigma syntax kontrolü çalıştır
+```bash
+python tools/run_sigma_cli.py check rules/sigma/
+```
+
+### 4. SIEM çıktıları üret
+```bash
+python tools/build_sigma.py
+```
+
+Üretilen dosyalar:
+
+- `build/splunk/windows_detections.spl`
+- `build/elastic/windows_detections.txt`
+
+`build/` klasörü bilinçli olarak generate edilir ve git’e commit edilmez.
+
+## CI/CD Akışı
+`/.github/workflows/sigma_pipeline.yml` aşağıdaki adımları çalıştırır:
+
+1. Fixture validation
+2. Sigma syntax/lint kontrolü
+3. Splunk ve Elasticsearch build
+4. Artifact upload

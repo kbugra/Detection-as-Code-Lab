@@ -4,6 +4,5 @@ __pycache__/
 *.dll
 *.log
 build/
+.cache/
 .env
-tests/dataset/T1053.005_Scheduled_Task/schtasks_create.json
-tests/dataset/T1053.005_Scheduled_Task/

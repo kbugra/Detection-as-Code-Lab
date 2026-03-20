@@ -17,10 +17,7 @@ detection:
             - '/create'
             - '/tn'
             - '/tr'
-    filter:
-        # SCCM veya Windows update gibi sistem işlemlerini hariç tutabiliriz
-        User: 'NT AUTHORITY\SYSTEM'
-    condition: selection and not filter
+    condition: selection
 falsepositives:
     - Meşru yazılım kurulumları veya sistem güncellemeleri
 level: medium

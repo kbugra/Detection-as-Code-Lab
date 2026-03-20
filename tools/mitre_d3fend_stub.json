@@ -1,0 +1,22 @@
+{
+  "@graph": [
+    {
+      "@type": "owl:Ontology",
+      "owl:versionIRI": "http://d3fend.mitre.org/ontologies/d3fend/0.16.0"
+    },
+    {
+      "@id": "d3f:Detect",
+      "@type": [
+        "d3f:DefensiveTactic"
+      ],
+      "rdfs:label": "Detect"
+    },
+    {
+      "@id": "d3f:Harden",
+      "@type": [
+        "d3f:DefensiveTactic"
+      ],
+      "rdfs:label": "Harden"
+    }
+  ]
+}

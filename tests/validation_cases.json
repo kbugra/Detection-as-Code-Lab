@@ -1,0 +1,68 @@
+{
+  "cases": [
+    {
+      "name": "LSASS access detection",
+      "rule": "rules/sigma/proc_access_win_lsass_susp_access.yml",
+      "positive": [
+        {
+          "path": "tests/dataset/mordor_lsass_dump.json",
+          "min_matches": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "tests/dataset/negative/benign_process_access.json",
+          "max_matches": 0
+        }
+      ]
+    },
+    {
+      "name": "PowerShell encoded command detection",
+      "rule": "rules/sigma/proc_creation_win_powershell_encoded.yml",
+      "positive": [
+        {
+          "path": "tests/dataset/T1059.001_PowerShell/powershell_encoded_command.json",
+          "min_matches": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "tests/dataset/negative/benign_process_creation.jsonl",
+          "max_matches": 0
+        }
+      ]
+    },
+    {
+      "name": "Scheduled task creation detection",
+      "rule": "rules/sigma/proc_creation_win_schtasks_creation.yml",
+      "positive": [
+        {
+          "path": "tests/dataset/T1053.005_Scheduled_Task_Persistence/schtasks_create.json",
+          "min_matches": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "tests/dataset/negative/benign_process_creation.jsonl",
+          "max_matches": 0
+        }
+      ]
+    },
+    {
+      "name": "Shadow copy deletion detection",
+      "rule": "rules/sigma/proc_creation_win_vssadmin_delete_shadows.yml",
+      "positive": [
+        {
+          "path": "tests/dataset/T1490_Inhibit_System_Recovery/vssadmin_delete.json",
+          "min_matches": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "tests/dataset/negative/benign_process_creation.jsonl",
+          "max_matches": 0
+        }
+      ]
+    }
+  ]
+}

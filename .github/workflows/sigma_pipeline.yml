@@ -16,37 +16,42 @@ jobs:
     
     steps:
       - name: 1. Kodu GitHub'dan Çek
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 2. Python Ortamını Kur
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
       - name: 3. Sigma CLI ve Eklentilerini Yükle
         run: |
           pip install sigma-cli
-          sigma plugin install splunk
-          sigma plugin install elasticsearch
-          sigma plugin install sysmon
+          python tools/run_sigma_cli.py plugin install splunk
+          python tools/run_sigma_cli.py plugin install elasticsearch
+          python tools/run_sigma_cli.py plugin install sysmon
 
-      - name: 4. Kuralları Test Et (Syntax & Linting)
+      - name: 4. Fixture Validation
+        run: |
+          python tools/validate_datasets.py
+
+      - name: 5. Kuralları Test Et (Syntax & Linting)
         run: |
           echo "Kuralların yapısı kontrol ediliyor..."
-          sigma check rules/sigma/
+          python tools/run_sigma_cli.py check rules/sigma/
 
-      - name: 5. Kuralları SIEM Dillerine Çevir (Build Aşaması)
+      - name: 6. Kuralları SIEM Dillerine Çevir (Build Aşaması)
         run: |
-          mkdir -p build/splunk build/elastic
-          echo "Splunk SPL'e dönüştürülüyor..."
-          sigma convert -t splunk -p sysmon rules/sigma/ > build/splunk/windows_detections.spl
-          
-          echo "Elasticsearch Query'e dönüştürülüyor..."
-          sigma convert -t lucene -p sysmon rules/sigma/ > build/elastic/windows_detections.txt
+          python tools/build_sigma.py
 
-      - name: 6. Üretilen Kodları Göster (Loglar için)
+      - name: 7. Üretilen Kodları Göster (Loglar için)
         run: |
           echo "==== ÜRETİLEN SPLUNK SORGUSU ===="
           cat build/splunk/windows_detections.spl
           echo -e "\n==== ÜRETİLEN ELASTICSEARCH SORGUSU ===="
           cat build/elastic/windows_detections.txt
+
+      - name: 8. Build Artifact'lerini Yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: sigma-build
+          path: build/

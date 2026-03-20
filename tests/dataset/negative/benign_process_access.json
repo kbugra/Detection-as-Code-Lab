@@ -1,0 +1,12 @@
+{
+  "EventID": 10,
+  "Channel": "Microsoft-Windows-Sysmon/Operational",
+  "Computer": "WORKSTATION-BASELINE",
+  "EventData": {
+    "TargetImage": "C:\\Windows\\System32\\lsass.exe",
+    "GrantedAccess": "0x1010",
+    "SourceImage": "C:\\Windows\\System32\\taskmgr.exe",
+    "SourceProcessId": "1408",
+    "TargetProcessId": "652"
+  }
+}
