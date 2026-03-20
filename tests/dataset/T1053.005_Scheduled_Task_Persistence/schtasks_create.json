@@ -1,1 +1,46 @@
-{"EventID": 1, "ProviderGuid": "{5770385f-c22a-43e0-bf4c-06f5698ffbd9}", "Image": "C:\\Windows\\System32\\schtasks.exe", "CommandLine": "schtasks.exe /create /tn \"WindowsUpdate\" /tr \"C:\\Windows\\Temp\\malware.exe\" /sc onstart /ru System", "User": "NT AUTHORITY\\SYSTEM", "ProcessId": 2048, "ParentImage": "C:\\Windows\\System32\\cmd.exe", "UtcTime": "2023-10-25 16:45:12.000", "Computer": "WORKSTATION-01.local"}
+[
+  {
+    "EventID": 1,
+    "ProviderGuid": "{5770385f-c22a-43e0-bf4c-06f5698ffbd9}",
+    "Image": "C:\\Windows\\System32\\cmd.exe",
+    "CommandLine": "cmd.exe /c schtasks.exe /create /tn \"WindowsUpdate\" /tr \"C:\\Windows\\Temp\\malware.exe\" /sc onstart /ru System",
+    "User": "NT AUTHORITY\\SYSTEM",
+    "ProcessId": 2020,
+    "ParentImage": "C:\\Windows\\System32\\services.exe",
+    "UtcTime": "2023-10-25 16:45:10.000",
+    "Computer": "WORKSTATION-01.local"
+  },
+  {
+    "EventID": 1,
+    "ProviderGuid": "{5770385f-c22a-43e0-bf4c-06f5698ffbd9}",
+    "Image": "C:\\Windows\\System32\\schtasks.exe",
+    "CommandLine": "schtasks.exe /query /tn \"MicrosoftEdgeUpdateTaskMachineCore\"",
+    "User": "NT AUTHORITY\\SYSTEM",
+    "ProcessId": 2032,
+    "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+    "UtcTime": "2023-10-25 16:45:11.000",
+    "Computer": "WORKSTATION-01.local"
+  },
+  {
+    "EventID": 1,
+    "ProviderGuid": "{5770385f-c22a-43e0-bf4c-06f5698ffbd9}",
+    "Image": "C:\\Windows\\System32\\schtasks.exe",
+    "CommandLine": "schtasks.exe /create /tn \"WindowsUpdate\" /tr \"C:\\Windows\\Temp\\malware.exe\" /sc onstart /ru System",
+    "User": "NT AUTHORITY\\SYSTEM",
+    "ProcessId": 2048,
+    "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+    "UtcTime": "2023-10-25 16:45:12.000",
+    "Computer": "WORKSTATION-01.local"
+  },
+  {
+    "EventID": 1,
+    "ProviderGuid": "{5770385f-c22a-43e0-bf4c-06f5698ffbd9}",
+    "Image": "C:\\Windows\\Temp\\malware.exe",
+    "CommandLine": "\"C:\\Windows\\Temp\\malware.exe\"",
+    "User": "NT AUTHORITY\\SYSTEM",
+    "ProcessId": 2216,
+    "ParentImage": "C:\\Windows\\System32\\taskeng.exe",
+    "UtcTime": "2023-10-25 16:46:00.000",
+    "Computer": "WORKSTATION-01.local"
+  }
+]

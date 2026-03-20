@@ -1,12 +1,50 @@
-{
+[
+  {
+    "EventID": 1,
+    "Channel": "Microsoft-Windows-Sysmon/Operational",
+    "Computer": "DESKTOP-THREAT-LAB",
+    "EventData": {
+      "Image": "C:\\Temp\\mimikatz.exe",
+      "CommandLine": "mimikatz.exe \"sekurlsa::logonpasswords\" exit",
+      "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+      "User": "THREAT-LAB\\operator",
+      "ProcessId": "4124",
+      "ParentProcessId": "3988"
+    }
+  },
+  {
     "EventID": 10,
     "Channel": "Microsoft-Windows-Sysmon/Operational",
     "Computer": "DESKTOP-THREAT-LAB",
     "EventData": {
-        "TargetImage": "C:\\Windows\\System32\\lsass.exe",
-        "GrantedAccess": "0x1010",
-        "SourceImage": "C:\\Temp\\mimikatz.exe",
-        "SourceProcessId": "4124",
-        "TargetProcessId": "652"
+      "TargetImage": "C:\\Windows\\System32\\lsass.exe",
+      "GrantedAccess": "0x1010",
+      "SourceImage": "C:\\Windows\\System32\\taskmgr.exe",
+      "SourceProcessId": "1220",
+      "TargetProcessId": "652"
     }
-}
+  },
+  {
+    "EventID": 10,
+    "Channel": "Microsoft-Windows-Sysmon/Operational",
+    "Computer": "DESKTOP-THREAT-LAB",
+    "EventData": {
+      "TargetImage": "C:\\Windows\\System32\\lsass.exe",
+      "GrantedAccess": "0x1010",
+      "SourceImage": "C:\\Temp\\mimikatz.exe",
+      "SourceProcessId": "4124",
+      "TargetProcessId": "652"
+    }
+  },
+  {
+    "EventID": 11,
+    "Channel": "Microsoft-Windows-Sysmon/Operational",
+    "Computer": "DESKTOP-THREAT-LAB",
+    "EventData": {
+      "TargetFilename": "C:\\Temp\\lsass_20260320.dmp",
+      "Image": "C:\\Temp\\mimikatz.exe",
+      "ProcessId": "4124",
+      "User": "THREAT-LAB\\operator"
+    }
+  }
+]
