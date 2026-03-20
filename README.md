@@ -1,6 +1,7 @@
+[EN]
 # Detection-as-Code (DaC) Factory: Sigma Pack for Windows Security
 
-*🇹🇷 Türkçe versiyonu aşağıdadır. / Turkish version is below.*
+*The Turkish (TR) version is below.*
 
 > **Transforming threat hunting from a manual task into a continuous engineering pipeline.**
 
@@ -33,7 +34,7 @@ The tactics and techniques covered by our current detection rules are mapped bel
 ## Validation with Golden Dataset
 To avoid reinventing the wheel and to ensure industry-standard calibration, the **OTRF Mordor** open-source dataset is utilized in this project. Our rules pass through rigorous Security QA checks using real-world (APT29, etc.) simulation logs located in the `/tests/dataset/` directory.
 
-## How to Run Locally?
+## How to Run Locally
 
 To test the project in your own environment or to manually generate SIEM queries:
 
@@ -51,7 +52,12 @@ sigma convert -t lucene -p sysmon rules/sigma/
 
 ---
 
-# Proje Vizyonu (Ruleset Philosophy) 🇹🇷
+[TR]
+# Detection-as-Code (DaC) Factory: Sigma Pack for Windows Security
+
+> **Transforming threat hunting from a manual task into a continuous engineering pipeline.**
+
+## Proje Vizyonu (Ruleset Philosophy)
 Modern Güvenlik Operasyon Merkezleri (SOC), kural yazımını ve test süreçlerini manuel olarak yönetmenin ötesine geçmelidir. Bu proje, geleneksel SIEM sorgu yazarlığını bir **Yazılım Mühendisliği (CI/CD)** disiplinine dönüştürmek amacıyla "Detection-as-Code" (DaC) felsefesiyle inşa edilmiştir. 
 
 Amacımız; platform bağımsız (vendor-agnostic) Sigma kuralları yazmak, bu kuralları sektör standardı olan **Mordor APT simülasyon logları** ile otomatik olarak test etmek ve GitHub Actions aracılığıyla saniyeler içinde Splunk (SPL) ve Elasticsearch (Lucene/KQL) dillerine dönüştürmektir.
