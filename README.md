@@ -21,6 +21,19 @@ The validation workflow is driven by `/tests/validation_cases.json` and executed
 - Positive fixtures ensure each rule fires on the intended attack sample.
 - Negative fixtures ensure the same rule does not fire on curated benign activity.
 - The dataset folder includes Mordor-style logs and lightweight lab fixtures formatted as Sysmon-like JSON/JSONL for deterministic CI validation.
+- Enriched fixtures such as `mordor_lsass_dump.json` and `schtasks_create.json` contain small event sequences instead of a single alerting row, so rules are tested with realistic context.
+
+## Repository Layout
+
+```text
+rules/sigma/            Sigma detection rules
+tests/dataset/          Positive and negative datasets
+tests/validation_cases.json
+tools/validate_datasets.py
+tools/run_sigma_cli.py  Offline-safe sigma wrapper
+tools/build_sigma.py    Build helper for SIEM outputs
+build/                  Generated artifacts
+```
 
 ## MITRE ATT&CK Coverage Matrix
 
@@ -45,6 +58,8 @@ python tools/run_sigma_cli.py plugin install splunk
 python tools/run_sigma_cli.py plugin install elasticsearch
 python tools/run_sigma_cli.py plugin install sysmon
 ```
+
+`tools/run_sigma_cli.py` is used instead of calling `sigma` directly so the project can run in restricted environments without depending on user-profile cache paths or live MITRE metadata downloads.
 
 ### 3. Run Sigma syntax checks
 ```bash
@@ -94,6 +109,19 @@ Doğrulama akışı `/tests/validation_cases.json` ile tanımlanır ve `python t
 - Pozitif fixture’lar her kuralın hedeflenen saldırı örneğinde tetiklendiğini doğrular.
 - Negatif fixture’lar aynı kuralın benign aktivitede tetiklenmediğini doğrular.
 - Dataset klasörü, deterministik CI doğrulaması için Mordor tarzı loglar ve Sysmon benzeri JSON/JSONL formatında hafif lab fixture’ları içerir.
+- `mordor_lsass_dump.json` ve `schtasks_create.json` gibi zenginleştirilmiş fixture’lar tek event yerine küçük bir event akışı içerir; böylece kurallar daha gerçekçi bağlamda test edilir.
+
+## Repo Yapısı
+
+```text
+rules/sigma/            Sigma kuralları
+tests/dataset/          Pozitif ve negatif datasetler
+tests/validation_cases.json
+tools/validate_datasets.py
+tools/run_sigma_cli.py  Offline uyumlu sigma wrapper'ı
+tools/build_sigma.py    SIEM build helper'ı
+build/                  Üretilen artifact'ler
+```
 
 ## MITRE ATT&CK Kapsam Matrisi
 
@@ -118,6 +146,8 @@ python tools/run_sigma_cli.py plugin install splunk
 python tools/run_sigma_cli.py plugin install elasticsearch
 python tools/run_sigma_cli.py plugin install sysmon
 ```
+
+`sigma` komutunu doğrudan çağırmak yerine `tools/run_sigma_cli.py` kullanılıyor; bunun nedeni kısıtlı ortamlarda kullanıcı profilindeki cache dizinlerine veya canlı MITRE metadata indirmelerine bağımlı kalmamak.
 
 ### 3. Sigma syntax kontrolü çalıştır
 ```bash
